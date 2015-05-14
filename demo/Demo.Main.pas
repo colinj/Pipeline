@@ -29,30 +29,35 @@ var
 implementation
 
 uses
-  Pipeline.Pipe,
-  Pipeline.LogPipe;
+  Pipeline.Pipe;
+//  Pipeline.LogPipe;
 
 {$R *.dfm}
 { TForm1 }
 
 procedure TForm1.btnGoClick(Sender: TObject);
 var
-   V: TPipe;
+   V: TPipe<Integer>;
 //  V: TLogPipe;
+  I: Integer;
 begin
-   V := TPipe
+   V := TPipe<Integer>
 //  V := TLogPipe(Log)
     .Bind(6)
     .Bind(Add12)
     .Bind(LogValue)
     .Bind(Subtract5)
     .Bind(LogValue)
-    .Bind(DivByZero)
+//    .Bind(DivByZero)
     .Bind(Triple)
     .Bind(Halve);
 
   Log('-----------');
-  Log(V.ToString);
+  if V.IsValid then
+    Log(Format('The final value is %d', [V.Value]))
+  else
+    Log('The error is: ' + V.Error);
+
 end;
 
 function TForm1.DivByZero(const aValue: Integer): Integer;

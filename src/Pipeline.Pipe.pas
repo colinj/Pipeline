@@ -1,3 +1,22 @@
+{****************************************************}
+{                                                    }
+{  Pipeline Library                                  }
+{                                                    }
+{  Copyright (C) 2015 Colin Johnsun                  }
+{                                                    }
+{  https:/github.com/colinj                          }
+{                                                    }
+{****************************************************}
+{                                                    }
+{  This Source Code Form is subject to the terms of  }
+{  the Mozilla Public License, v. 2.0. If a copy of  }
+{  the MPL was not distributed with this file, You   }
+{  can obtain one at                                 }
+{                                                    }
+{  http://mozilla.org/MPL/2.0/                       }
+{                                                    }
+{****************************************************}
+
 unit Pipeline.Pipe;
 
 interface
@@ -7,58 +26,37 @@ uses
   System.Classes;
 
 type
-  TIntFunc = reference to function(const I: Integer): Integer;
-  TIntProc = reference to procedure(const I: Integer);
+  TPipeFunc<T, TResult> = reference to function(const Arg: T): TResult;
+  TPipeProc<T> = reference to procedure(const Arg: T);
 
-  TPipe = record
+  TIntFunc = TPipeFunc<Integer, Integer>;
+  TIntProc = TPipeProc<Integer>;
+
+  TPipe<T> = record
   private
-    FValue: Integer;
+    FValue: T;
     FError: string;
   public
-    class function Bind(const aValue: Integer): TPipe; overload; static;
-    function Bind(const aFunc: TIntFunc): TPipe; overload;
-    function Bind(const aProc: TIntProc): TPipe; overload;
+    constructor Bind(const aValue: T); overload;
+    function Bind(const aProc: TPipeProc<T>): TPipe<T>; overload;
+    function Bind(const aFunc: TPipeFunc<T, T>): TPipe<T>; overload;
+    function Bind<TResult>(const aFunc: TPipeFunc<T, TResult>): TPipe<TResult>; overload;
     function IsValid: Boolean;
-    function ToString: string;
+    property Value: T read FValue;
+    property Error: string read FError;
   end;
 
 implementation
 
-{ TPipe }
+{ TPipe<T> }
 
-function TPipe.IsValid: Boolean;
+constructor TPipe<T>.Bind(const aValue: T);
 begin
-  Result := FError = '';
+  FValue := aValue;
+  FError := '';
 end;
 
-class function TPipe.Bind(const aValue: Integer): TPipe;
-begin
-  Result.FValue := aValue;
-  Result.FError := '';
-end;
-
-function TPipe.ToString: string;
-begin
-  if FError = '' then
-    Result := 'The value is ' + IntToStr(FValue)
-  else
-    Result := 'Error occurred: ' + FError;
-end;
-
-function TPipe.Bind(const aFunc: TIntFunc): TPipe;
-begin
-  if FError = '' then
-    try
-      Result.FValue := aFunc(FValue);
-    except
-      on E: Exception do
-        Result.FError := E.Message;
-    end
-  else
-    Result := Self;
-end;
-
-function TPipe.Bind(const aProc: TIntProc): TPipe;
+function TPipe<T>.Bind(const aProc: TPipeProc<T>): TPipe<T>;
 begin
   if FError = '' then
     try
@@ -72,6 +70,29 @@ begin
     end;
 
   Result := Self;
+end;
+
+function TPipe<T>.Bind(const aFunc: TPipeFunc<T, T>): TPipe<T>;
+begin
+  Result := Bind<T>(aFunc);
+end;
+
+function TPipe<T>.Bind<TResult>(const aFunc: TPipeFunc<T, TResult>): TPipe<TResult>;
+begin
+  if FError = '' then
+    try
+      Result.FValue := aFunc(FValue);
+    except
+      on E: Exception do
+        Result.FError := E.Message;
+    end
+  else
+    Result.FError := FError;
+end;
+
+function TPipe<T>.IsValid: Boolean;
+begin
+  Result := FError = '';
 end;
 
 end.

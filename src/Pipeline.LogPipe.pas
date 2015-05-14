@@ -1,3 +1,22 @@
+{****************************************************}
+{                                                    }
+{  Pipeline Library                                  }
+{                                                    }
+{  Copyright (C) 2015 Colin Johnsun                  }
+{                                                    }
+{  https:/github.com/colinj                          }
+{                                                    }
+{****************************************************}
+{                                                    }
+{  This Source Code Form is subject to the terms of  }
+{  the Mozilla Public License, v. 2.0. If a copy of  }
+{  the MPL was not distributed with this file, You   }
+{  can obtain one at                                 }
+{                                                    }
+{  http://mozilla.org/MPL/2.0/                       }
+{                                                    }
+{****************************************************}
+
 unit Pipeline.LogPipe;
 
 interface
@@ -8,50 +27,54 @@ uses
   Pipeline.Pipe;
 
 type
-  TLogProc = reference to procedure(const S: string);
+  TLogProc<T> = reference to procedure(const Arg: TPipe<T>);
 
-  TLogPipe = record
+  TLogPipe<T> = record
   private
-    FLogger: TLogProc;
-    FPipe: TPipe;
+    FLogger: TLogProc<T>;
+    FPipe: TPipe<T>;
+    function GetError: string;
+    function GetValue: T;
   public
-    function Bind(const aValue: Integer): TLogPipe; overload;
-    function Bind(const aFunc: TIntFunc): TLogPipe; overload;
-    function Bind(const aProc: TIntProc): TLogPipe; overload;
+    function Bind(const aValue: T): TLogPipe<T>; overload;
+    function Bind(const aProc: TPipeProc<T>): TLogPipe<T>; overload;
+    function Bind(const aFunc: TPipeFunc<T, T>): TLogPipe<T>; overload;
+    function Bind<TResult>(const aFunc: TPipeFunc<T, TResult>): TLogPipe<TResult>; overload;
     function IsValid: Boolean;
-    function ToString: string;
-    class operator Implicit(const aLogger: TLogProc): TLogPipe;
+    class operator Implicit(const aLogger: TLogProc<T>): TLogPipe<T>;
+    property Value: T read GetValue;
+    property Error: string read GetError;
   end;
 
 implementation
 
-{ TLogPipe }
+{ TLogPipe<T> }
 
-function TLogPipe.IsValid: Boolean;
+function TLogPipe<T>.IsValid: Boolean;
 begin
   Result := FPipe.IsValid;
 end;
 
-function TLogPipe.ToString: string;
+function TLogPipe<T>.ToString: string;
 begin
   Result := FPipe.ToString;
 end;
 
-class operator TLogPipe.Implicit(const aLogger: TLogProc): TLogPipe;
+class operator TLogPipe<T>.Implicit(const aLogger: TLogProc): TLogPipe<T>;
 begin
   Result.FLogger := aLogger;
 end;
 
-function TLogPipe.Bind(const aValue: Integer): TLogPipe;
+function TLogPipe<T>.Bind(const aValue: T): TLogPipe<T>;
 begin
   Result.FLogger := FLogger;
-  Result.FPipe := TPipe.Bind(aValue);
+  Result.FPipe := TPipe<T>.Bind(aValue);
 
   if Assigned(FLogger) then
     FLogger(Result.ToString);
 end;
 
-function TLogPipe.Bind(const aFunc: TIntFunc): TLogPipe;
+function TLogPipe<T>.Bind(const aFunc: TIntFunc): TLogPipe<T>;
 begin
   Result.FLogger := FLogger;
   Result.FPipe := FPipe.Bind(aFunc);
@@ -60,13 +83,43 @@ begin
     FLogger(Result.ToString);
 end;
 
-function TLogPipe.Bind(const aProc: TIntProc): TLogPipe;
+function TLogPipe<T>.Bind(const aProc: TIntProc): TLogPipe<T>;
 begin
   Result.FLogger := FLogger;
   Result.FPipe := FPipe.Bind(aProc);
 
   if Assigned(FLogger) then
     FLogger(Result.ToString);
+end;
+
+function TLogPipe<T>.Bind(const aProc: TPipeProc<T>): TLogPipe<T>;
+begin
+
+end;
+
+function TLogPipe<T>.Bind(const aValue: T): TLogPipe<T>;
+begin
+
+end;
+
+function TLogPipe<T>.Bind(const aFunc: TPipeFunc<T, T>): TLogPipe<T>;
+begin
+
+end;
+
+function TLogPipe<T>.Bind<TResult>(const aFunc: TPipeFunc<T, TResult>): TLogPipe<TResult>;
+begin
+
+end;
+
+function TLogPipe<T>.GetError: string;
+begin
+  Result := FPipe.Error;
+end;
+
+function TLogPipe<T>.GetValue: T;
+begin
+  Result := FPipe.Value;
 end;
 
 end.
