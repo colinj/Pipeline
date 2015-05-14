@@ -2,10 +2,9 @@ program PipeDemo;
 
 uses
   Forms,
-  fmPipe in 'fmPipe.pas' {Form1},
-  uPipe in 'uPipe.pas',
-  uPipe2 in 'uPipe2.pas',
-  uLogPipe in 'uLogPipe.pas';
+  Demo.Main in 'Demo.Main.pas' {Form1} ,
+  Pipeline.Pipe in '..\src\Pipeline.Pipe.pas',
+  Pipeline.LogPipe in '..\src\Pipeline.LogPipe.pas';
 
 {$R *.res}
 
@@ -14,4 +13,5 @@ begin
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TForm1, Form1);
   Application.Run;
+
 end.

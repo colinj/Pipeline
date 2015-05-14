@@ -1,4 +1,4 @@
-unit fmPipe;
+unit Demo.Main;
 
 interface
 
@@ -29,66 +29,65 @@ var
 implementation
 
 uses
-    uPipe2,
-    uLogPipe;
+  Pipeline.Pipe,
+  Pipeline.LogPipe;
 
 {$R *.dfm}
-
 { TForm1 }
 
 procedure TForm1.btnGoClick(Sender: TObject);
 var
-//    V: TPipe;
-    V: TLogPipe;
+   V: TPipe;
+//  V: TLogPipe;
 begin
-//    V := TPipe
-    V := TLogPipe(Log)
-        .Bind(6)
-        .Bind(Add12)
-        .Bind(LogValue)
-        .Bind(Subtract5)
-        .Bind(LogValue)
-        .Bind(DivByZero)
-        .Bind(Triple)
-        .Bind(Halve);
+   V := TPipe
+//  V := TLogPipe(Log)
+    .Bind(6)
+    .Bind(Add12)
+    .Bind(LogValue)
+    .Bind(Subtract5)
+    .Bind(LogValue)
+    .Bind(DivByZero)
+    .Bind(Triple)
+    .Bind(Halve);
 
-    Log('-----------');
-    Log(V.ToString);
+  Log('-----------');
+  Log(V.ToString);
 end;
 
 function TForm1.DivByZero(const aValue: Integer): Integer;
 begin
-    Result := aValue div (aValue - aValue);
+  Result := aValue div (aValue - aValue);
 end;
 
 procedure TForm1.Log(const aMsg: string);
 begin
-    memLog.Lines.Add(aMsg);
+  memLog.Lines.Add(aMsg);
 end;
 
 procedure TForm1.LogValue(const aValue: Integer);
 begin
-    Log('This is the LogValue procedure: ' + IntToStr(aValue));
+  Log('This is the LogValue procedure: ' + IntToStr(aValue));
 end;
 
 function TForm1.Add12(const aValue: Integer): Integer;
 begin
-    Result := aValue + 12;
+  Result := aValue + 12;
 end;
 
 function TForm1.Halve(const aValue: Integer): Integer;
 begin
-    Result := aValue div 2;
+  Result := aValue div 2;
 end;
 
 function TForm1.Triple(const aValue: Integer): Integer;
 begin
-    Result := aValue * 3;
+  Result := aValue * 3;
 end;
 
 function TForm1.Subtract5(const aValue: Integer): Integer;
 begin
-    Result := aValue - 5;
+  Result := aValue - 5;
 end;
 
 end.
