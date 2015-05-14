@@ -7,9 +7,8 @@ uses
   System.Classes;
 
 type
-  TLogFunc = procedure(const S: string) of object;
-  TIntFunc = function(const I: Integer): Integer of object;
-  TIntProc = procedure(const I: Integer) of object;
+  TIntFunc = reference to function(const I: Integer): Integer;
+  TIntProc = reference to procedure(const I: Integer);
 
   TPipe = record
   private

@@ -8,9 +8,11 @@ uses
   Pipeline.Pipe;
 
 type
+  TLogProc = reference to procedure(const S: string);
+
   TLogPipe = record
   private
-    FLogger: TLogFunc;
+    FLogger: TLogProc;
     FPipe: TPipe;
   public
     function Bind(const aValue: Integer): TLogPipe; overload;
@@ -18,7 +20,7 @@ type
     function Bind(const aProc: TIntProc): TLogPipe; overload;
     function IsValid: Boolean;
     function ToString: string;
-    class operator Implicit(const aLogger: TLogFunc): TLogPipe;
+    class operator Implicit(const aLogger: TLogProc): TLogPipe;
   end;
 
 implementation
@@ -35,7 +37,7 @@ begin
   Result := FPipe.ToString;
 end;
 
-class operator TLogPipe.Implicit(const aLogger: TLogFunc): TLogPipe;
+class operator TLogPipe.Implicit(const aLogger: TLogProc): TLogPipe;
 begin
   Result.FLogger := aLogger;
 end;
