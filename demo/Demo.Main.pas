@@ -10,14 +10,16 @@ type
   TForm1 = class(TForm)
     memLog: TMemo;
     btnGo: TButton;
+    btnCalc: TButton;
     procedure btnGoClick(Sender: TObject);
+    procedure btnCalcClick(Sender: TObject);
   private
-    procedure Log(const aMsg: string);
     function Add12(const aValue: Integer): Integer;
     function Subtract5(const aValue: Integer): Integer;
     function Triple(const aValue: Integer): Integer;
     function Halve(const aValue: Integer): Integer;
     function DivByZero(const aValue: Integer): Integer;
+    procedure Log(const aMsg: string);
     procedure LogValue(const aValue: Integer);
   public
     { Public declarations }
@@ -29,26 +31,45 @@ var
 implementation
 
 uses
+  Demo.CalcFuncs,
   Pipeline.Pipe;
-//  Pipeline.LogPipe;
 
 {$R *.dfm}
 { TForm1 }
 
+procedure TForm1.btnCalcClick(Sender: TObject);
+var
+  V: TPipe<Integer>;
+begin
+  V := TPipe<Integer>
+    .Bind(6)
+    .Bind(Add(12))
+    .Bind(LogValue)
+    .Bind(Subtract(5))
+    .Bind(LogValue)
+    .Bind(DivideBy(0))
+    .Bind(Multiply(3))
+    .Bind(DivideBy(2));
+
+  Log('-----------');
+  if V.IsValid then
+    Log(Format('The final value is %d', [V.Value]))
+  else
+    Log('The error is: ' + V.Error);
+end;
+
 procedure TForm1.btnGoClick(Sender: TObject);
 var
    V: TPipe<Integer>;
-//  V: TLogPipe;
   I: Integer;
 begin
    V := TPipe<Integer>
-//  V := TLogPipe(Log)
     .Bind(6)
     .Bind(Add12)
     .Bind(LogValue)
     .Bind(Subtract5)
     .Bind(LogValue)
-//    .Bind(DivByZero)
+    .Bind(DivByZero)
     .Bind(Triple)
     .Bind(Halve);
 
