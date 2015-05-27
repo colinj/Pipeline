@@ -7,26 +7,24 @@ uses
   Dialogs, StdCtrls;
 
 type
-  TForm1 = class(TForm)
+  TfrmMain = class(TForm)
     memLog: TMemo;
     btnGo: TButton;
     btnCalc: TButton;
+    Button1: TButton;
+    procedure btnDemo1Click(Sender: TObject);
     procedure btnGoClick(Sender: TObject);
     procedure btnCalcClick(Sender: TObject);
   private
-    function Add12(const aValue: Integer): Integer;
-    function Subtract5(const aValue: Integer): Integer;
-    function Triple(const aValue: Integer): Integer;
-    function Halve(const aValue: Integer): Integer;
-    function DivByZero(const aValue: Integer): Integer;
     procedure Log(const aMsg: string);
     procedure LogValue(const aValue: Integer);
+    procedure btnDemo2Click(Sender: TObject);
   public
     { Public declarations }
   end;
 
 var
-  Form1: TForm1;
+  frmMain: TfrmMain;
 
 implementation
 
@@ -35,9 +33,78 @@ uses
   Pipeline.Pipe;
 
 {$R *.dfm}
-{ TForm1 }
 
-procedure TForm1.btnCalcClick(Sender: TObject);
+{ TfrmMain }
+
+procedure TfrmMain.btnDemo1Click(Sender: TObject);
+var
+  I: Integer;
+begin
+  try
+    I := DivideBy(2)(Multiply(3)((Subtract(5)(Add(12)(6)))));
+
+    Log(Format('The final value is %d', [I]))
+  except
+    on E: Exception do
+    begin
+      Log('-----------');
+      Log('The error is: ' + E.Message);
+    end;
+  end;
+end;
+
+procedure TfrmMain.btnDemo2Click(Sender: TObject);
+var
+  I: Integer;
+  Add12: TPipeFunc<Integer, Integer>;
+  Subtract5: TPipeFunc<Integer, Integer>;
+  Triple: TPipeFunc<Integer, Integer>;
+  Halve: TPipeFunc<Integer, Integer>;
+  DivideByZero: TPipeFunc<Integer, Integer>;
+begin
+  Add12 := Add(12);
+  Subtract5 := Subtract(5);
+  Triple := Multiply(3);
+  Halve := DivideBy(2);
+  DivideByZero := DivideBy(0);
+  try
+    I := Halve(Triple(Subtract5(Add12(6))));
+
+    Log(Format('The final value is %d', [I]))
+  except
+    on E: Exception do
+    begin
+      Log('-----------');
+      Log('The error is: ' + E.Message);
+    end;
+  end;
+end;
+
+procedure TfrmMain.btnGoClick(Sender: TObject);
+var
+  I: Integer;
+begin
+  try
+    I := 6;
+    I := Add(12)(I);
+    LogValue(I);
+    I := Subtract(5)(I);
+    LogValue(I);
+    I := DivideBy(0)(I);
+    I := Multiply(3)(I);
+    I := DivideBy(2)(I);
+
+    Log(Format('The final value is %d', [I]))
+  except
+    on E: Exception do
+    begin
+      Log('-----------');
+      Log('The error is: ' + E.Message);
+    end;
+  end;
+end;
+
+procedure TfrmMain.btnCalcClick(Sender: TObject);
 var
   V: TPipe<Integer>;
 begin
@@ -58,62 +125,14 @@ begin
     Log('The error is: ' + V.Error);
 end;
 
-procedure TForm1.btnGoClick(Sender: TObject);
-var
-   V: TPipe<Integer>;
-  I: Integer;
-begin
-   V := TPipe<Integer>
-    .Bind(6)
-    .Bind(Add12)
-    .Bind(LogValue)
-    .Bind(Subtract5)
-    .Bind(LogValue)
-    .Bind(DivByZero)
-    .Bind(Triple)
-    .Bind(Halve);
-
-  Log('-----------');
-  if V.IsValid then
-    Log(Format('The final value is %d', [V.Value]))
-  else
-    Log('The error is: ' + V.Error);
-
-end;
-
-function TForm1.DivByZero(const aValue: Integer): Integer;
-begin
-  Result := aValue div (aValue - aValue);
-end;
-
-procedure TForm1.Log(const aMsg: string);
+procedure TfrmMain.Log(const aMsg: string);
 begin
   memLog.Lines.Add(aMsg);
 end;
 
-procedure TForm1.LogValue(const aValue: Integer);
+procedure TfrmMain.LogValue(const aValue: Integer);
 begin
   Log('This is the LogValue procedure: ' + IntToStr(aValue));
-end;
-
-function TForm1.Add12(const aValue: Integer): Integer;
-begin
-  Result := aValue + 12;
-end;
-
-function TForm1.Halve(const aValue: Integer): Integer;
-begin
-  Result := aValue div 2;
-end;
-
-function TForm1.Triple(const aValue: Integer): Integer;
-begin
-  Result := aValue * 3;
-end;
-
-function TForm1.Subtract5(const aValue: Integer): Integer;
-begin
-  Result := aValue - 5;
 end;
 
 end.

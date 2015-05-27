@@ -76,6 +76,7 @@
 			<DCC_GenerateStackFrames>true</DCC_GenerateStackFrames>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
+			<Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
 			<VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
 			<VerInfo_Locale>1033</VerInfo_Locale>
 		</PropertyGroup>
@@ -84,10 +85,14 @@
 				<MainSource>MainSource</MainSource>
 			</DelphiCompile>
 			<DCCReference Include="Demo.Main.pas">
-				<Form>Form1</Form>
+				<Form>frmMain</Form>
 			</DCCReference>
 			<DCCReference Include="..\src\Pipeline.Pipe.pas"/>
 			<DCCReference Include="Demo.CalcFuncs.pas"/>
+			<DCCReference Include="Demo.Update.pas">
+				<Form>frmUpdate</Form>
+				<FormType>dfm</FormType>
+			</DCCReference>
 			<BuildConfiguration Include="Debug">
 				<Key>Cfg_2</Key>
 				<CfgParent>Base</CfgParent>
