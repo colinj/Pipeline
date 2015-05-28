@@ -12,13 +12,15 @@ type
     btnGo: TButton;
     btnCalc: TButton;
     Button1: TButton;
+    btnUpdate: TButton;
+    procedure btnDemo0Click(Sender: TObject);
     procedure btnDemo1Click(Sender: TObject);
-    procedure btnGoClick(Sender: TObject);
-    procedure btnCalcClick(Sender: TObject);
+    procedure btnDemo2Click(Sender: TObject);
+    procedure btnDemo3Click(Sender: TObject);
+    procedure btnUpdateClick(Sender: TObject);
   private
     procedure Log(const aMsg: string);
     procedure LogValue(const aValue: Integer);
-    procedure btnDemo2Click(Sender: TObject);
   public
     { Public declarations }
   end;
@@ -30,18 +32,18 @@ implementation
 
 uses
   Demo.CalcFuncs,
-  Pipeline.Pipe;
+  Pipeline.Pipe, Demo.Update;
 
 {$R *.dfm}
 
 { TfrmMain }
 
-procedure TfrmMain.btnDemo1Click(Sender: TObject);
+procedure TfrmMain.btnDemo0Click(Sender: TObject);
 var
   I: Integer;
 begin
   try
-    I := DivideBy(2)(Multiply(3)((Subtract(5)(Add(12)(6)))));
+    I := DivideBy(2)(Multiply(3)((Subtract(5)(Add(12)(7)))));
 
     Log(Format('The final value is %d', [I]))
   except
@@ -53,7 +55,7 @@ begin
   end;
 end;
 
-procedure TfrmMain.btnDemo2Click(Sender: TObject);
+procedure TfrmMain.btnDemo1Click(Sender: TObject);
 var
   I: Integer;
   Add12: TPipeFunc<Integer, Integer>;
@@ -68,7 +70,7 @@ begin
   Halve := DivideBy(2);
   DivideByZero := DivideBy(0);
   try
-    I := Halve(Triple(Subtract5(Add12(6))));
+    I := Halve(Triple(Subtract5(Add12(7))));
 
     Log(Format('The final value is %d', [I]))
   except
@@ -80,7 +82,7 @@ begin
   end;
 end;
 
-procedure TfrmMain.btnGoClick(Sender: TObject);
+procedure TfrmMain.btnDemo2Click(Sender: TObject);
 var
   I: Integer;
 begin
@@ -104,7 +106,12 @@ begin
   end;
 end;
 
-procedure TfrmMain.btnCalcClick(Sender: TObject);
+procedure TfrmMain.btnUpdateClick(Sender: TObject);
+begin
+  frmUpdate.Show;
+end;
+
+procedure TfrmMain.btnDemo3Click(Sender: TObject);
 var
   V: TPipe<Integer>;
 begin

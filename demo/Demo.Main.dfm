@@ -3,7 +3,7 @@ object frmMain: TfrmMain
   Top = 0
   Caption = 'Main'
   ClientHeight = 299
-  ClientWidth = 635
+  ClientWidth = 618
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -11,6 +11,7 @@ object frmMain: TfrmMain
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  Position = poScreenCenter
   PixelsPerInch = 96
   TextHeight = 13
   object memLog: TMemo
@@ -18,35 +19,42 @@ object frmMain: TfrmMain
     Top = 8
     Width = 505
     Height = 283
-    Lines.Strings = (
-      'memLog')
     TabOrder = 0
   end
   object btnGo: TButton
-    Left = 544
-    Top = 40
-    Width = 75
+    Left = 519
+    Top = 8
+    Width = 91
     Height = 25
-    Caption = 'btnGo'
+    Caption = 'Demo1'
     TabOrder = 1
-    OnClick = btnGoClick
+    OnClick = btnDemo1Click
   end
   object btnCalc: TButton
-    Left = 544
-    Top = 111
-    Width = 75
+    Left = 519
+    Top = 70
+    Width = 91
     Height = 25
-    Caption = 'btnCalc'
+    Caption = 'Demo 3'
     TabOrder = 2
-    OnClick = btnCalcClick
+    OnClick = btnDemo3Click
   end
   object Button1: TButton
-    Left = 544
-    Top = 71
-    Width = 75
+    Left = 519
+    Top = 39
+    Width = 91
     Height = 25
-    Caption = 'btnGo'
+    Caption = 'Demo 2'
     TabOrder = 3
-    OnClick = btnGoClick
+    OnClick = btnDemo2Click
+  end
+  object btnUpdate: TButton
+    Left = 519
+    Top = 125
+    Width = 91
+    Height = 25
+    Caption = 'Update Demo'
+    TabOrder = 4
+    OnClick = btnUpdateClick
   end
 end

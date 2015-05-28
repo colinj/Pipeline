@@ -125,6 +125,7 @@ const
     'Regards,'#13#10 +
     'The Server Team';
 begin
+  Sleep(1000);
   if not chkBadConnection.Checked then
     memEmail.Lines.Add(Format(EMAIL_MSG, [aResp.User, aResp.Id, aResp.OldName, aResp.NewName]))
   else
